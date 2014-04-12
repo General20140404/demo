@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Book Info Upload</title>
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-responsive.css">
+</head>
+	<body ng-app>
+		<div ng-controller="Ctrl" class="container">
+			<h3>Add books info to MongoDB</h3>
+			<h4>Provide a douban link</h4>
+			<p class="muted"> >> For example : http://book.douban.com/subject/2228378/ </p>
+			<input type="text" style="width:400px;" ng-model="link"/> </br>
+			<button class="btn btn-primary" ng-click="add()">Add</button>
+			</br></br>
+			<p ng-class="{ 'text-success': json.success, 'text-error' : !json.success}" >{{json.message}}</p>
+			</br>
+			<p class="text-info">{{json.data}}</p>
+		</div>
+		
+
+	</body>
+	<script src="lib/jquery-1.7.1.js"></script>
+	<script src="lib/bootstrap/js/bootstrap.js"></script>
+	<script src="lib/angularjs/angular.js"></script>
+
+	<script type="text/javascript">
+		var app = angular.module('app', []);
+
+		function Ctrl($scope, $http){
+
+			$scope.add = function(){
+				var reg = /book.douban.com\/subject\/(\d+)/;
+				if(reg.test($scope.link)){
+					var bookId = RegExp.$1; 
+
+					$http.post('/addNewBook.do', {
+						id : bookId
+					}).success(function(data){
+						$scope.json = data;
+
+					}).error(function(data){
+						$scope.json = data;
+					});
+				}else{
+					return false;
+				}
+			}
+		}
+	</script>
+</html>
